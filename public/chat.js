@@ -14,6 +14,7 @@ socket.on('disconnect', () => {
 let $message = $('#message'),
   $handle = $('#handle'),
   $btn = $('#send'),
+  $feedback = $('#feedback'),
   $output = $('#output');
 
 // Emit events
@@ -25,7 +26,15 @@ $btn.on('click', function () {
   });
 });
 
+$message.keypress(() => {
+  socket.emit('typing', $handle.val());
+})
 // Listen for events
 socket.on('chat', (data) => {
+  $feedback.html('');
   $output.append(`<p><strong>${data.handle}: <strong>${data.message}</strong></strong></p>`)
+})
+
+socket.on('typing', data => {
+  $feedback.html(`<p><em>${data} is typing a message...</em></p>`)
 })
